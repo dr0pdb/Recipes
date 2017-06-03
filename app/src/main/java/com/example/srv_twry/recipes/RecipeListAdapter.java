@@ -1,9 +1,11 @@
 package com.example.srv_twry.recipes;
 
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,21 +49,35 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     }
 
 
-    public class RecipeListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class RecipeListViewHolder extends RecyclerView.ViewHolder {
 
         ImageView recipeImage;
         TextView recipeName;
+        TextView recipeServings;
+        Button getStartedButton;
 
         public RecipeListViewHolder(View view){
             super(view);
             recipeImage = (ImageView) view.findViewById(R.id.iv_image_recipe);
             recipeName = (TextView) view.findViewById(R.id.tv_recipe_name);
+            recipeServings = (TextView) view.findViewById(R.id.tv_number_servings);
+            getStartedButton = (Button) view.findViewById(R.id.start_cooking);
+
+            getStartedButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    recipeListOnClickListenerInteface.onRecipeItemClicked(recipeArrayList,position);
+                }
+            });
         }
 
         public void bind(int position){
             int recipeId = recipeArrayList.get(position).recipeId;
             String name = recipeArrayList.get(position).name;
 
+            //To underline the title
+            recipeName.setPaintFlags(recipeName.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             recipeName.setText(name);
 
             switch (recipeId){
@@ -80,13 +96,10 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
                 default:
                     recipeImage.setImageResource(R.mipmap.ic_launcher);
             }
+            String servingsString = "Serves "+ recipeArrayList.get(position).servings + " People";
+            recipeServings.setText(servingsString);
         }
 
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            recipeListOnClickListenerInteface.onRecipeItemClicked(recipeArrayList,position);
-        }
     }
 
 }

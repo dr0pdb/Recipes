@@ -30,34 +30,4 @@ public class Recipe {
         this.stepsArrayList=stepsArrayList;
         this.servings=servings;
     }
-
-
-
-    //class to represent the ingredients of a recipe. Made it an inner class as it is only useful while they have an associated recipe object
-    public class Ingredient {
-        double quantity;
-        String measure;
-        String ingredients;
-
-        public Ingredient(double quantity , String measure ,String ingredients){
-            this.quantity = quantity;
-            this.measure = measure;
-            this.ingredients = ingredients;
-        }
-    }
-
-    //class to represent a single step in the recipe
-    public class Steps{
-        int stepid;
-        String shortDescription;
-        String videoUrl;
-        String thumbnailUrl;
-
-        public Steps(int stepid, String shortDescription , String videoUrl , String thumbnailUrl){
-            this.stepid=stepid;
-            this.shortDescription=shortDescription;
-            this.videoUrl=videoUrl;
-            this.thumbnailUrl=thumbnailUrl;
-        }
-    }
 }

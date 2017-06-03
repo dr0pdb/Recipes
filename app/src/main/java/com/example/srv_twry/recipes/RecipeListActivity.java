@@ -14,9 +14,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -48,9 +51,9 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListA
         //Start the network request here
         RequestQueue requestQueue = Volley.newRequestQueue(RecipeListActivity.this);
         String url = getResources().getString(R.string.url);
-        JsonObjectRequest jsonObjectRequest = getJsonObject(url);
+        JsonArrayRequest jsonArrayRequest = getJsonArray(url);
         if (isNetworkAvailable()){
-            requestQueue.add(jsonObjectRequest);
+            requestQueue.add(jsonArrayRequest);
         }else{
             Log.e(TAG,"No internet");
             Toast toast = Toast.makeText(this,"Check your Connection!",Toast.LENGTH_LONG);
@@ -58,10 +61,10 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListA
         }
     }
 
-    private JsonObjectRequest getJsonObject(String url) {
-        return new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+    private JsonArrayRequest getJsonArray(String url) {
+        return new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 recipeArrayList = parseRecipeJson(response);
                 recipeListAdapter = new RecipeListAdapter(recipeArrayList,RecipeListActivity.this);
                 recipeListRecyclerView.setAdapter(recipeListAdapter);
@@ -77,21 +80,62 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListA
         });
     }
 
-    private ArrayList<Recipe> parseRecipeJson(JSONObject response) {
+    private ArrayList<Recipe> parseRecipeJson(JSONArray response) {
         ArrayList<Recipe> returnedRecipeList= new ArrayList<>();
 
         if (response !=null){
-            
+            try{
+                int recipeId;
+                String name;
+                ArrayList<Ingredient> ingredients = new ArrayList<>();
+                ArrayList<Steps> steps = new ArrayList<>();
+                int servings;
+
+                for (int i=0;i<response.length();i++){
+                    JSONObject obj = response.getJSONObject(i);
+                    recipeId = obj.getInt("id");
+                    name = obj.getString("name");
+                    JSONArray ingredientsJsonArray = obj.getJSONArray("ingredients");
+                    JSONArray stepsJsonArray = obj.getJSONArray("steps");
+                    servings = obj.getInt("servings");
+
+                    //Creating Arraylist out of JSONArray
+                    for (int j=0;j<ingredientsJsonArray.length();j++){
+                        JSONObject ingredientsObject = ingredientsJsonArray.getJSONObject(j);
+                        double quantity = ingredientsObject.getDouble("quantity");
+                        String measure = ingredientsObject.getString("measure");
+                        String ingredient = ingredientsObject.getString("ingredient");
+                        ingredients.add(new Ingredient(quantity,measure,ingredient));
+                    }
+
+                    for (int j=0;j<stepsJsonArray.length();j++){
+                        JSONObject stepsJsonObject = stepsJsonArray.getJSONObject(j);
+                        int stepId= stepsJsonObject.getInt("id");
+                        String shortDescription = stepsJsonObject.getString("shortDescription");
+                        String description = stepsJsonObject.getString("description");
+                        String videoUrl = stepsJsonObject.getString("videoURL");
+                        String thumbnailUrl = stepsJsonObject.getString("thumbnailURL");
+                        steps.add(new Steps(stepId,shortDescription,description,videoUrl,thumbnailUrl));
+                    }
+
+                    returnedRecipeList.add(new Recipe(recipeId,name,ingredients,steps,servings));
+                }
+            }catch (JSONException e){
+                e.printStackTrace();
+
+            }
         }else{
             Log.e(TAG,"Empty Json response !");
             Toast toast = Toast.makeText(RecipeListActivity.this,"Check your Connection!",Toast.LENGTH_LONG);
             toast.show();
         }
+        return returnedRecipeList;
     }
 
     @Override
     public void onRecipeItemClicked(ArrayList<Recipe> recipeArrayList, int position) {
-        //Handle click of the view here.
+        Toast toast = Toast.makeText(RecipeListActivity.this,"clcked",Toast.LENGTH_LONG);
+        toast.show();
     }
 
     //A helper method to check Internet Connection Status

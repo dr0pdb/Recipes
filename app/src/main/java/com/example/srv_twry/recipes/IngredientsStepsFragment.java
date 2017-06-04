@@ -1,5 +1,6 @@
 package com.example.srv_twry.recipes;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -29,6 +31,10 @@ public class IngredientsStepsFragment extends Fragment {
     RecyclerView ingredientsRecyclerView;
     @BindView(R.id.rv_steps_list)
     RecyclerView stepsRecyclerView;
+    @BindView(R.id.tv_ingredients_title)
+    TextView ingredientsTitle;
+    @BindView(R.id.tv_steps_title)
+    TextView stepsTitle;
 
     //Empty constructor
     public IngredientsStepsFragment(){}
@@ -46,6 +52,10 @@ public class IngredientsStepsFragment extends Fragment {
         StepsRecyclerViewAdapter stepsRecyclerViewAdapter = new StepsRecyclerViewAdapter(stepsArrayList);
         stepsRecyclerView.setAdapter(stepsRecyclerViewAdapter);
         stepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //Underlining the two titles
+        ingredientsTitle.setPaintFlags(ingredientsTitle.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        stepsTitle.setPaintFlags(stepsTitle.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         return rootView;
     }
 

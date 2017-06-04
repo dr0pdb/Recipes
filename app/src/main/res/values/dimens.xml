@@ -2,4 +2,6 @@
 <resources>
     <dimen name="dimen_8dp">8dp</dimen>
     <integer name="columns_in_grid">1</integer>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="dimen_4dp">4dp</dimen>
 </resources>

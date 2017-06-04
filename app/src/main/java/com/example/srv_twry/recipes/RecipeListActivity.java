@@ -1,10 +1,11 @@
 package com.example.srv_twry.recipes;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,7 +16,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -133,9 +133,10 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListA
     }
 
     @Override
-    public void onRecipeItemClicked(ArrayList<Recipe> recipeArrayList, int position) {
-        Toast toast = Toast.makeText(RecipeListActivity.this,"clcked",Toast.LENGTH_LONG);
-        toast.show();
+    public void onRecipeItemClicked(Recipe recipe) {
+        Intent intent = new Intent(RecipeListActivity.this,RecipeDetailActivity.class);
+        intent.putExtra("Recipe",recipe);
+        startActivity(intent);
     }
 
     //A helper method to check Internet Connection Status

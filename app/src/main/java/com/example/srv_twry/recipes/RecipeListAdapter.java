@@ -45,7 +45,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
     //Interface to handle onClickListener on the recyclerview
     public interface RecipeListOnClickListenerInteface{
-        void onRecipeItemClicked(ArrayList<Recipe> recipeArrayList,int position);
+        void onRecipeItemClicked(Recipe recipe);
     }
 
 
@@ -67,7 +67,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    recipeListOnClickListenerInteface.onRecipeItemClicked(recipeArrayList,position);
+                    Recipe recipe = recipeArrayList.get(position);
+                    recipeListOnClickListenerInteface.onRecipeItemClicked(recipe);
                 }
             });
         }

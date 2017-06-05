@@ -3,7 +3,7 @@ package com.example.srv_twry.recipes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 
@@ -20,6 +20,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements Ingredien
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_recipe_detail);
 
         recipe = getIntent().getParcelableExtra("Recipe");
@@ -42,5 +43,16 @@ public class RecipeDetailActivity extends AppCompatActivity implements Ingredien
         Intent intent = new Intent(this,StepVideoAndDescriptionActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -16,11 +16,11 @@ import java.util.ArrayList;
 public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<Steps> stepsArrayList;
-    private StepsOnClickListener StepsOnClickListener;
+    private StepsOnClickListener stepsOnClickListener;
 
     public StepsRecyclerViewAdapter(ArrayList<Steps> stepsArrayList, StepsOnClickListener stepsOnClickListener){
         this.stepsArrayList=stepsArrayList;
-        this.StepsOnClickListener = stepsOnClickListener;
+        this.stepsOnClickListener = stepsOnClickListener;
     }
 
     @Override
@@ -51,6 +51,7 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
         public ViewHolder(View view){
             super(view);
             stepShortDescription = (TextView) view.findViewById(R.id.view_holder_steps_title);
+            stepShortDescription.setOnClickListener(this);
         }
 
         public void bind(int position) {
@@ -59,9 +60,8 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
 
         @Override
         public void onClick(View v) {
-            int position = getAdapterPosition();
-            StepsOnClickListener.onStepItemClicked(position);
-            Log.v("STEPS ADAPTER","Item clicked");
+            stepsOnClickListener.onStepItemClicked(getAdapterPosition());
+            Log.v("Steps Adapter","Clicked");
         }
     }
 }

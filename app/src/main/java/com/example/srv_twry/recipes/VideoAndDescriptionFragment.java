@@ -60,20 +60,26 @@ public class VideoAndDescriptionFragment extends Fragment implements ExoPlayer.E
 
         final View rootView = inflater.inflate(R.layout.fragment_video_description,container,false);
 
-        //Only for non landscape mode
-        if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE){
-            TextView descriptionStepTitle = (TextView) rootView.findViewById(R.id.tv_title_description_step);
-            descriptionStepTitle.setPaintFlags(descriptionStepTitle.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-            TextView descriptionStep = (TextView) rootView.findViewById(R.id.tv_description_step);
-            descriptionStep.setText(description);
-        }
-
-        videoStepView = (SimpleExoPlayerView) rootView.findViewById(R.id.view_video_step);
-
         //get the data from the parent activity about the url and the description
         Bundle bundle = getArguments();
         videoUrl = bundle.getString("Step URL");
         description = bundle.getString("Step Description");
+
+        //Only for portrait-phone and tablet
+        if (rootView.findViewById(R.id.tv_title_description_step) !=null){
+            TextView descriptionStepTitle = (TextView) rootView.findViewById(R.id.tv_title_description_step);
+            descriptionStepTitle.setPaintFlags(descriptionStepTitle.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            if (!description.equals("")){
+                TextView descriptionStep = (TextView) rootView.findViewById(R.id.tv_description_step);
+                descriptionStep.setText(description);
+            }else{
+                descriptionStepTitle.setVisibility(View.GONE);
+            }
+
+        }
+
+        videoStepView = (SimpleExoPlayerView) rootView.findViewById(R.id.view_video_step);
+
 
         if (savedInstanceState !=null){
             currentWindow = savedInstanceState.getInt("currentWindow");

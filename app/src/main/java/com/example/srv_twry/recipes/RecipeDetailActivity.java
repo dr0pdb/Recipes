@@ -2,6 +2,7 @@ package com.example.srv_twry.recipes;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -16,6 +17,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements Ingredien
     private static final String TAG = RecipeDetailActivity.class.getSimpleName();
     Recipe recipe;
     IngredientsStepsFragment ingredientsStepsFragment;
+    VideoAndDescriptionFragment videoAndDescriptionFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +38,35 @@ public class RecipeDetailActivity extends AppCompatActivity implements Ingredien
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.frame_fragment_ingredients_steps,ingredientsStepsFragment).commit();
 
+        //For tablet
+        if (findViewById(R.id.frame_fragment_video_description) !=null){
+            videoAndDescriptionFragment = new VideoAndDescriptionFragment();
+            Bundle bundleVideo = new Bundle();
+            bundleVideo.putString("Step URL",stepsArrayList.get(0).videoUrl);
+            bundleVideo.putString("Step Description",stepsArrayList.get(0).description);
+            videoAndDescriptionFragment.setArguments(bundleVideo);
+
+            android.support.v4.app.FragmentTransaction videoFragmentTransaction = getSupportFragmentManager().beginTransaction();
+            videoFragmentTransaction.add(R.id.frame_fragment_video_description,videoAndDescriptionFragment).commit();
+        }
     }
 
     @Override
     public void onIngredientStepItemClicked(Bundle bundle) {
-        Intent intent = new Intent(this,StepVideoAndDescriptionActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        //For phone
+        if (findViewById(R.id.frame_fragment_video_description) ==null){
+            Intent intent = new Intent(this,StepVideoAndDescriptionActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }else{
+            //for tablets
+            videoAndDescriptionFragment = new VideoAndDescriptionFragment();
+            videoAndDescriptionFragment.setArguments(bundle);
+            android.support.v4.app.FragmentTransaction videoFragmentTransaction = getSupportFragmentManager().beginTransaction();
+            videoFragmentTransaction.replace(R.id.frame_fragment_video_description,videoAndDescriptionFragment).commit();
+        }
+
+
     }
 
     @Override

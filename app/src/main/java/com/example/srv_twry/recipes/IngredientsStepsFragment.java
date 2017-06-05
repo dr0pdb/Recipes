@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import butterknife.ButterKnife;
  * The fragment to hold the recycler view of the ingredients and steps of the recipe.
  */
 
-public class IngredientsStepsFragment extends Fragment {
+public class IngredientsStepsFragment extends Fragment implements StepsRecyclerViewAdapter.StepsOnClickListener{
 
     private ArrayList<Ingredient> ingredientArrayList;
     private ArrayList<Steps> stepsArrayList;
@@ -49,7 +50,7 @@ public class IngredientsStepsFragment extends Fragment {
         IngredientsRecyclerViewAdapter ingredientsRecyclerViewAdapter=new IngredientsRecyclerViewAdapter(ingredientArrayList);
         ingredientsRecyclerView.setAdapter(ingredientsRecyclerViewAdapter);
         ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        StepsRecyclerViewAdapter stepsRecyclerViewAdapter = new StepsRecyclerViewAdapter(stepsArrayList);
+        StepsRecyclerViewAdapter stepsRecyclerViewAdapter = new StepsRecyclerViewAdapter(stepsArrayList,this);
         stepsRecyclerView.setAdapter(stepsRecyclerViewAdapter);
         stepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -59,4 +60,18 @@ public class IngredientsStepsFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onStepItemClicked(int position) {
+        //Contact attached activity with data
+        IngredientStepsOnClickListener ingredientStepsOnClickListener =(IngredientStepsOnClickListener) getActivity();
+        Bundle bundle = new Bundle();
+        bundle.putString("Step URL",stepsArrayList.get(position).videoUrl);
+        bundle.putString("Step Description",stepsArrayList.get(position).description);
+        ingredientStepsOnClickListener.onIngredientStepItemClicked(bundle);
+        Log.v("STEPS FRAGMENTS","Position clicked");
+    }
+
+    public interface IngredientStepsOnClickListener{
+        void onIngredientStepItemClicked(Bundle bundle);
+    }
 }

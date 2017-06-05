@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.LoginFilter;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -87,14 +88,16 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListA
             try{
                 int recipeId;
                 String name;
-                ArrayList<Ingredient> ingredients = new ArrayList<>();
-                ArrayList<Steps> steps = new ArrayList<>();
+                ArrayList<Ingredient> ingredients;
+                ArrayList<Steps> steps;
                 int servings;
 
                 for (int i=0;i<response.length();i++){
                     JSONObject obj = response.getJSONObject(i);
                     recipeId = obj.getInt("id");
                     name = obj.getString("name");
+                    ingredients = new ArrayList<>();
+                    steps = new ArrayList<>();
                     JSONArray ingredientsJsonArray = obj.getJSONArray("ingredients");
                     JSONArray stepsJsonArray = obj.getJSONArray("steps");
                     servings = obj.getInt("servings");
@@ -117,7 +120,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListA
                         String thumbnailUrl = stepsJsonObject.getString("thumbnailURL");
                         steps.add(new Steps(stepId,shortDescription,description,videoUrl,thumbnailUrl));
                     }
-
+                    Log.v("ingredients "+i,ingredients.size()+" ");
+                    Log.v("steps "+i,steps.size()+" ");
                     returnedRecipeList.add(new Recipe(recipeId,name,ingredients,steps,servings));
                 }
             }catch (JSONException e){

@@ -1,6 +1,7 @@
 package com.example.srv_twry.recipes;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,11 @@ import java.util.ArrayList;
 public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<Steps> stepsArrayList;
+    private StepsOnClickListener StepsOnClickListener;
 
-    public StepsRecyclerViewAdapter(ArrayList<Steps> stepsArrayList){
+    public StepsRecyclerViewAdapter(ArrayList<Steps> stepsArrayList, StepsOnClickListener stepsOnClickListener){
         this.stepsArrayList=stepsArrayList;
+        this.StepsOnClickListener = stepsOnClickListener;
     }
 
     @Override
@@ -37,7 +40,11 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
         return stepsArrayList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public interface StepsOnClickListener{
+        void onStepItemClicked(int position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView stepShortDescription;
 
@@ -48,6 +55,13 @@ public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecycler
 
         public void bind(int position) {
             stepShortDescription.setText(stepsArrayList.get(position).shortDescription);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            StepsOnClickListener.onStepItemClicked(position);
+            Log.v("STEPS ADAPTER","Item clicked");
         }
     }
 }

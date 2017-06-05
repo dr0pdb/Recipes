@@ -4,4 +4,8 @@
     <integer name="columns_in_grid">1</integer>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="dimen_4dp">4dp</dimen>
+    <dimen name="dimen_10dp">10dp</dimen>
+    <dimen name="dimen_18sp">18sp</dimen>
+    <dimen name="dimen_20dp">20dp</dimen>
+    <dimen name="dimen_22sp">22sp</dimen>
 </resources>

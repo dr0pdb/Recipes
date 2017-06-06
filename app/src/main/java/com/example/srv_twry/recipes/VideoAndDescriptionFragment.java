@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +55,8 @@ public class VideoAndDescriptionFragment extends Fragment implements ExoPlayer.E
     int currentWindow;
     boolean playWhenReady;
     SimpleExoPlayer player;
+    private MediaSessionCompat mediaSessionCompat;
+    private PlaybackStateCompat.Builder mStateBuilder;
 
     @Nullable
     @Override
@@ -99,6 +103,7 @@ public class VideoAndDescriptionFragment extends Fragment implements ExoPlayer.E
             //Initialize the media player
             initializePlayer();
             player.addListener(this);
+            initializeMediaSession();
         }
 
         return rootView;
@@ -125,6 +130,24 @@ public class VideoAndDescriptionFragment extends Fragment implements ExoPlayer.E
                 new DefaultExtractorsFactory(), null, null);
     }
 
+    private void initializeMediaSession(){
+        mediaSessionCompat = new MediaSessionCompat(getContext(),TAG);
+        mediaSessionCompat.setFlags(
+                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+        );
+
+        mediaSessionCompat.setMediaButtonReceiver(null);
+        mStateBuilder = new PlaybackStateCompat.Builder().setActions(PlaybackStateCompat.ACTION_PLAY |
+        PlaybackStateCompat.ACTION_PAUSE | PlaybackStateCompat.ACTION_PLAY_PAUSE | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
+
+        mediaSessionCompat.setPlaybackState(mStateBuilder.build());
+
+        mediaSessionCompat.setCallback(new MyMediaSessionCallback());
+
+        mediaSessionCompat.setActive(true);
+    }
+
     private void releasePlayer() {
         if (player != null) {
             playbackPosition = player.getCurrentPosition();
@@ -139,43 +162,42 @@ public class VideoAndDescriptionFragment extends Fragment implements ExoPlayer.E
     public void onPause() {
         super.onPause();
         releasePlayer();
+        mediaSessionCompat.setActive(false);
     }
 
     @Override
     public void onTimelineChanged(Timeline timeline, Object manifest) {
-
     }
 
     @Override
     public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
     }
 
     @Override
     public void onLoadingChanged(boolean isLoading) {
-
     }
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        if ((playbackState == ExoPlayer.STATE_READY) && playWhenReady ){
+            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,player.getCurrentPosition(),1f);
+        }else if(playbackState == ExoPlayer.STATE_READY){
+            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,player.getCurrentPosition(),1f);
+        }
 
+        mediaSessionCompat.setPlaybackState(mStateBuilder.build());
     }
 
     @Override
     public void onPlayerError(ExoPlaybackException error) {
-        Toast.makeText(getContext(), "Unable to play video", Toast.LENGTH_SHORT).show();
-        Log.e(TAG,"Exoplayer error");
-        error.printStackTrace();
     }
 
     @Override
     public void onPositionDiscontinuity() {
-
     }
 
     @Override
     public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
     }
 
     @Override
@@ -184,5 +206,22 @@ public class VideoAndDescriptionFragment extends Fragment implements ExoPlayer.E
         outState.putInt("currentWindow",currentWindow);
         outState.putBoolean("playWhenReady",playWhenReady);
         outState.putLong("playbackPosition",playbackPosition);
+    }
+
+    private class MyMediaSessionCallback extends MediaSessionCompat.Callback {
+        @Override
+        public void onPlay() {
+            player.setPlayWhenReady(true);
+        }
+
+        @Override
+        public void onPause() {
+            player.setPlayWhenReady(false);
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            player.seekTo(0);
+        }
     }
 }

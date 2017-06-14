@@ -67,6 +67,7 @@ public class IngredientsStepsFragment extends Fragment implements StepsRecyclerV
         Bundle bundle = new Bundle();
         bundle.putString("Step URL",stepsArrayList.get(position).videoUrl);
         bundle.putString("Step Description",stepsArrayList.get(position).description);
+        bundle.putString("Step thumbnail",stepsArrayList.get(position).thumbnailUrl);
         ingredientStepsOnClickListener.onIngredientStepItemClicked(bundle);
         Log.v("STEPS FRAGMENTS","Position clicked");
     }

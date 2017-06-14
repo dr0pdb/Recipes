@@ -14,4 +14,5 @@
     <string name="add_widget">Add widget</string>
     <string name="recipe">Recipe</string>
     <string name="ingredients_stackview">Ingredients</string>
+    <string name="thumbnail_for_the_step">Thumbnail for the step</string>
 </resources>

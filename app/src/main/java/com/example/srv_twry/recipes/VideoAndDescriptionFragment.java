@@ -1,7 +1,9 @@
 package com.example.srv_twry.recipes;
 
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +37,8 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 
 /**
@@ -49,6 +54,7 @@ public class VideoAndDescriptionFragment extends Fragment implements ExoPlayer.E
 
     String videoUrl;
     String description;
+    String thumbnailUrl;
 
     //Member variables for the exo-player
     long playbackPosition;
@@ -68,6 +74,7 @@ public class VideoAndDescriptionFragment extends Fragment implements ExoPlayer.E
         Bundle bundle = getArguments();
         videoUrl = bundle.getString("Step URL");
         description = bundle.getString("Step Description");
+        thumbnailUrl = bundle.getString("Step thumbnail");
 
         //Only for portrait-phone and tablet
         if (rootView.findViewById(R.id.tv_title_description_step) !=null){
@@ -79,7 +86,28 @@ public class VideoAndDescriptionFragment extends Fragment implements ExoPlayer.E
             }else{
                 descriptionStepTitle.setVisibility(View.GONE);
             }
+            //if thumbnail url is not empty
+            if (!thumbnailUrl.equals("")){
+                final ImageView thumbnail = (ImageView) rootView.findViewById(R.id.iv_thumbnail_description_step);
+                thumbnail.setVisibility(View.VISIBLE);
 
+                Picasso.with(getContext()).load(thumbnailUrl).into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        thumbnail.setImageBitmap(bitmap);
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                        thumbnail.setVisibility(View.GONE);  //Set the visibility to GONE in case of error.
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
+            }
         }
 
         videoStepView = (SimpleExoPlayerView) rootView.findViewById(R.id.view_video_step);
@@ -162,7 +190,9 @@ public class VideoAndDescriptionFragment extends Fragment implements ExoPlayer.E
     public void onPause() {
         super.onPause();
         releasePlayer();
-        mediaSessionCompat.setActive(false);
+        if(mediaSessionCompat !=null){
+            mediaSessionCompat.setActive(false);        //added null checking after code review.
+        }
     }
 
     @Override

@@ -15,6 +15,18 @@
             android:layout_width="match_parent"
             android:layout_height="400dp"/>
 
+        <ImageView
+            android:id="@+id/iv_thumbnail_description_step"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_10dp"
+            android:layout_marginLeft="@dimen/dimen_8dp"
+            android:layout_marginStart="@dimen/dimen_8dp"
+            android:layout_marginEnd="@dimen/dimen_8dp"
+            android:layout_marginRight="@dimen/dimen_8dp"
+            android:contentDescription="@string/thumbnail_for_the_step"
+            android:visibility="gone"/>
+
         <TextView
             android:id="@+id/tv_title_description_step"
             android:layout_width="wrap_content"

@@ -2,10 +2,10 @@ package com.example.srv_twry.recipes;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-
 import java.util.ArrayList;
 
 /*
